@@ -14,7 +14,7 @@ systemctl enable nftables
 systemctl start nftables
 
 # 工作目录
-WORKDIR="/app/nft-cn-block"
+WORKDIR="/app/nft-other-block"
 
 echo "===> 创建工作目录: $WORKDIR"
 mkdir -p $WORKDIR
@@ -113,7 +113,7 @@ cat > $WORKDIR/update.sh << 'EOF'
 
 set -e
 
-cd /app/nft-cn-block
+cd /app/nft-other-block
 
 echo "===> 更新 APNIC 数据"
 wget -q https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest -O apnic.txt
@@ -148,8 +148,8 @@ TMP_CRON=$(mktemp)
 crontab -l 2>/dev/null > $TMP_CRON || true
 
 # 2️⃣ 检查是否已存在相同任务
-if ! grep -Fq "/app/nft-cn-block/update.sh" $TMP_CRON; then
-    echo "0 3 * * * /app/nft-cn-block/update.sh" >> $TMP_CRON
+if ! grep -Fq "/app/nft-other-block/update.sh" $TMP_CRON; then
+    echo "0 3 * * * /app/nft-other-block/update.sh" >> $TMP_CRON
 fi
 
 # 3️⃣ 安装新的 crontab
@@ -166,7 +166,7 @@ ALLOWED_PORTS=$(grep 'tcp dport' /etc/nftables.conf | grep -o '{.*}' | tr -d '{}
 echo "===> 部署完成 ✅"
 echo "-----------------------------------"
 echo "✔ 已屏蔽 海外 IPv4 + IPv6"
-echo "✔ 数据目录: /app/nft-cn-block"
+echo "✔ 数据目录: /app/nft-other-block"
 echo "✔ 自动每日更新"
 echo "✔ 已允许访问的端口: $ALLOWED_PORTS"
 echo "-----------------------------------"
