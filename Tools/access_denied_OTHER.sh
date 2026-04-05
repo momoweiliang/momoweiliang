@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# ----  屏蔽海外地区IP访问  ----
+
 # 出错即退出（防止错误继续执行）
 set -e
 
@@ -66,11 +68,16 @@ table inet filter {
         ct state established,related accept
 
         # 3️⃣ 白名单（最高优先级）
-        ip saddr {1.1.1.1, 1.1.1.2, 223.104.42.169} accept
+        ip saddr {1.1.1.1, 1.1.1.2} accept
 
-        # 4️⃣ 屏蔽中国 IP
-        ip saddr @cn_ipv4 drop
-        ip6 saddr @cn_ipv6 drop
+        # 4️⃣ 放行国内、封禁海外
+        # ✅ 放行中国 IP
+        ip saddr @cn_ipv4 accept
+        ip6 saddr @cn_ipv6 accept
+
+        # ❌ 不在集合的全部 drop，即封禁海外IP
+        ip saddr != @cn_ipv4 drop
+        ip6 saddr != @cn_ipv6 drop
 
         # 5️⃣ 允许指定端口（非 CN 可访问）
         tcp dport {21, 22} accept
@@ -158,7 +165,7 @@ ALLOWED_PORTS=$(grep 'tcp dport' /etc/nftables.conf | grep -o '{.*}' | tr -d '{}
 
 echo "===> 部署完成 ✅"
 echo "-----------------------------------"
-echo "✔ 已屏蔽 CN IPv4 + IPv6"
+echo "✔ 已屏蔽 海外 IPv4 + IPv6"
 echo "✔ 数据目录: /app/nft-cn-block"
 echo "✔ 自动每日更新"
 echo "✔ 已允许访问的端口: $ALLOWED_PORTS"

@@ -1,0 +1,55 @@
+# Fail2ban 安装与使用终极笔记
+
+# 步骤 1.1: 更新软件包列表 (最佳实践)
+sudo apt update
+
+# 步骤 1.2: 安装 Fail2ban
+sudo apt install -y fail2ban
+
+# 立即启动 Fail2ban 服务
+sudo systemctl start fail2ban
+
+# 将 Fail2ban 服务设置为开机自启
+sudo systemctl enable fail2ban
+
+# 查看 Fail2ban 服务的当前状态
+sudo systemctl status fail2ban
+
+步骤 2.1: 创建本地配置文件
+复制一份 jail.conf 作为我们的本地配置文件 jail.local
+
+# 从模板复制配置文件
+sudo cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+步骤 2.2: 编辑 jail.local 文件
+使用文本编辑器（如 nano 或 vim）打开 jail.local 文件进行配置
+
+sudo nano /etc/fail2ban/jail.local
+
+步骤 2.4: 粘贴您的自定义配置
+
+# /etc/fail2ban/jail.local
+# Fail2Ban SSH 防护配置（Debian 12）
+# 尝试5次失败直接封禁24小时，支持IPv6
+
+[DEFAULT]
+# 日志文件
+logtarget = /app/fail2ban/fail2ban.log
+
+# 封禁动作，支持 IPv4/IPv6
+banaction = iptables-multiport
+
+# 忽略本机和内网管理 IP
+ignoreip = 127.0.0.1/8 ::1 1.1.1.1
+
+# SSH 防护
+[sshd]
+enabled  = true
+port     = ssh
+logpath  = /app/fail2ban/auth.log
+# 2分钟内失败次数
+maxretry = 3
+# 检测窗口10分钟
+findtime = 120
+# 封禁24小时
+bantime  = 86400
