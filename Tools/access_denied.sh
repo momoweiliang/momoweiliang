@@ -31,7 +31,7 @@ echo "===> 生成中国 IPv6 列表"
 # IPv6 直接就是前缀长度
 grep '|CN|ipv6|' apnic.txt | awk -F'|' '{print $4 "/" $5}' > cn_ipv6.txt
 
-echo "===> 写入 nftables 主配置"
+echo "===> 写入 nftables 配置"
 
 # 注意：这里仍然使用 /etc/nftables.conf（系统标准位置，不能乱改）
 cat > /etc/nftables.conf << 'EOF'
@@ -66,7 +66,7 @@ table inet filter {
         ct state established,related accept
 
         # 3️⃣ 白名单（最高优先级）
-        ip saddr {1.1.1.1, 1.1.1.2} accept
+        ip saddr {1.1.1.1, 1.1.1.2, 223.104.42.169} accept
 
         # 4️⃣ 屏蔽中国 IP
         ip saddr @cn_ipv4 drop
@@ -119,7 +119,7 @@ echo "===> 清空旧 IP 集合"
 nft flush set inet filter cn_ipv4
 nft flush set inet filter cn_ipv6
 
-echo "===> 重新导入 IPv4 / IPv6 地址到 nftables"
+echo "===> 重新导入 IPv4 / IPv6 地址到 nftables，时间较长，请耐心等待！"
 for ipfile in cn_ipv4.txt cn_ipv6.txt; do
     while read ip; do
         setname=$(basename $ipfile .txt)
@@ -133,7 +133,25 @@ EOF
 chmod +x $WORKDIR/update.sh
 
 echo "===> 添加定时任务（每天凌晨 3 点自动更新）"
-(crontab -l 2>/dev/null | grep -v "/app/nft-cn-block/update.sh"; echo "0 3 * * * /app/nft-cn-block/update.sh") | crontab -
+
+# 临时文件
+TMP_CRON=$(mktemp)
+
+# 1️⃣ 读取现有 crontab，如果没有也不报错
+crontab -l 2>/dev/null > $TMP_CRON || true
+
+# 2️⃣ 检查是否已存在相同任务
+if ! grep -Fq "/app/nft-cn-block/update.sh" $TMP_CRON; then
+    echo "0 3 * * * /app/nft-cn-block/update.sh" >> $TMP_CRON
+fi
+
+# 3️⃣ 安装新的 crontab
+crontab $TMP_CRON
+
+# 4️⃣ 删除临时文件
+rm -f $TMP_CRON
+
+echo "===> 定时任务添加完成 ✅"
 
 # 自动提取允许的端口并提示
 ALLOWED_PORTS=$(grep 'tcp dport' /etc/nftables.conf | grep -o '{.*}' | tr -d '{} ')
