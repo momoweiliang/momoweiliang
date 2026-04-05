@@ -133,7 +133,7 @@ EOF
 chmod +x $WORKDIR/update.sh
 
 echo "===> 添加定时任务（每天凌晨 3 点自动更新）"
-(crontab -l 2>/dev/null; echo "0 3 * * * $WORKDIR/update.sh") | crontab -
+(crontab -l 2>/dev/null | grep -v "/app/nft-cn-block/update.sh"; echo "0 3 * * * /app/nft-cn-block/update.sh") | crontab -
 
 # 自动提取允许的端口并提示
 ALLOWED_PORTS=$(grep 'tcp dport' /etc/nftables.conf | grep -o '{.*}' | tr -d '{} ')
