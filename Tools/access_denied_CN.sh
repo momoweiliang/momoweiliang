@@ -7,7 +7,7 @@ set -e
 
 echo "===> 安装依赖（nftables + wget）"
 apt update -y
-apt install -y nftables wget
+apt install -y nftables wget cron
 
 echo "===> 启用 nftables 开机启动"
 systemctl enable nftables
@@ -74,7 +74,7 @@ table inet filter {
         ip saddr @cn_ipv4 drop
         ip6 saddr @cn_ipv6 drop
 
-        # 5️⃣ 允许指定端口（非 CN 可访问）
+        # 5️⃣ 允许指定端口
         tcp dport {21, 22} accept
 
         # 6️⃣ ICMP（可选）
