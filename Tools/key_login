@@ -1,6 +1,12 @@
+mkdir -p /root/.ssh/
+vi /root/.ssh/authorized_keys
+
+
 修改 SSH 服务配置
 编辑 /etc/ssh/sshd_config，确保以下配置生效：
 
+
+cat >> /etc/ssh/sshd_config << 'EOF'
 # SSH端口（自定义即可）
 Port 22
 
@@ -17,3 +23,4 @@ AuthenticationMethods publickey
 # 其他安全建议（可选）
 UsePAM no                  # 禁用 PAM 认证（需确保密钥登录正常）
 PermitEmptyPasswords no    # 禁止空密码登录
+EOF
