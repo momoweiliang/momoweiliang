@@ -1,0 +1,19 @@
+{
+  "_comment_api_id": "Telegram API ID，来自 my.telegram.org",
+  "api_id": 12345678,
+
+  "_comment_api_hash": "Telegram API HASH，来自 my.telegram.org",
+  "api_hash": "API_HASH",
+
+  "_comment_channel_id": "素材频道 ID，通常是 -100 开头",
+  "channel_id": -1001234567890,
+
+  "_comment_ttl_seconds": "阅后销毁时间，单位：秒",
+  "ttl_seconds": 10,
+
+  "_comment_send_delay": "每个媒体之间的发送间隔，单位：秒",
+  "send_delay": 0.3,
+
+  "_comment_max_send": "用户不指定数量时，默认最多发送几个媒体",
+  "max_send": 99
+}
