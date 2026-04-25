@@ -1,7 +1,7 @@
 """
 ========================================
 📦 项目：Telegram 自动图片/视频分发
-🔖 版本：v1.2
+🔖 版本：v1.1
 
 ✅ 已实现功能：
 1. 关键词严格匹配：
@@ -65,7 +65,7 @@ from telethon.errors import TtlMediaInvalidError
 # =========================
 # 🔧 基础常量
 # =========================
-VERSION = "v1.2"
+VERSION = "v1.1"
 BASE_DIR = Path("/app/bot")
 CONFIG_FILE = BASE_DIR / "config.json"
 CACHE_FILE = BASE_DIR / "cache.json"
