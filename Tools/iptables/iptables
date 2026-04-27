@@ -39,3 +39,20 @@ num  target  prot source      destination
 
 # 2. 删除对应行（比如第3条）
 iptables -D INPUT 3
+
+Docker 使用 FORWARD 链转发流量，绕过了 INPUT 的 DROP 策略，需要添加DOCKER-USER 链规则
+iptables -I DOCKER-USER -p tcp --dport 8317 -j DROP
+
+查看规则（带行号）
+iptables -L DOCKER-USER -n --line-numbers -v
+
+删除方法
+✅ 方法1：按行号删除
+iptables -D DOCKER-USER 1
+✅ 方法2：按规则删除
+iptables -D DOCKER-USER -p tcp --dport 8317 -j DROP
+确认是否删除成功
+iptables -L DOCKER-USER -n --line-numbers -v
+
+一键清空 DOCKER-USER
+iptables -F DOCKER-USER
