@@ -1,0 +1,29 @@
+{
+  "_comment_api_id": "Telegram API ID，来自 my.telegram.org",
+  "api_id": API_ID,
+
+  "_comment_api_hash": "Telegram API HASH，来自 my.telegram.org",
+  "api_hash": "API_HASH",
+
+  "_comment_channel_id": "素材频道 ID，通常是 -100 开头",
+  "channel_id": -1001234567890,
+
+  "_comment_photo_ttl_seconds": "图片阅后销毁时间，单位：秒",
+  "photo_ttl_seconds": 10,
+
+  "_comment_video_ttl_buffer_seconds": "视频 TTL 缓冲时间，最终视频 TTL = 视频时长 + 该缓冲时间",
+  "video_ttl_buffer_seconds": 0,
+
+  "_comment_video_ttl_max_seconds": "视频最大 TTL，单位：秒，防止过长视频 TTL 太大",
+  "video_ttl_max_seconds": 60,
+
+  "_comment_send_delay": "图片发送间隔，单位：秒；当前代码中视频不额外等待",
+  "send_delay": 0.3,
+
+  "_comment_max_send": "用户不指定数量时，默认最多发送多少个媒体",
+  "max_send": 99,
+
+  "_comment_max_concurrent_sends": "并发发送数量，建议 2，不建议过高，过高可能触发 Telegram 限流",
+  "max_concurrent_sends": 3
+
+}
